@@ -43,10 +43,25 @@ rule9 = ctrl.Rule(error['Too_cold'] | error_dot['Getting_hotter'], percent_outpu
 
 
 percent_output_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9])
-percent = ctrl.ControlSystemSimulation(washing_ctrl)
+percent = ctrl.ControlSystemSimulation(percent_output_ctrl)
 
-percent.input['error'] = 40
-percent.input['error_dot'] = 70
+percent.input['error'] = -1.5
+percent.input['error_dot'] = -4
+
+percent.compute()
+
+percent.input['error'] = -1.5
+percent.input['error_dot'] = -1
+
+percent.compute()
+
+percent.input['error'] = 0.5
+percent.input['error_dot'] = 1
+
+percent.compute()
+
+percent.input['error'] = 0.5
+percent.input['error_dot'] = 4
 
 percent.compute()
 
