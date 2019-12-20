@@ -22,23 +22,33 @@ error_dot.automf(names=error_dot_name)
 error.view()
 error_dot.view()
 
-percent_output['Cool'] = fuzz.trimf(percent_output.universe, [0, 8, 12])
+percent_output['Cool'] = fuzz.trimf(percent_output.universe, [-100, -50, 0])
+percent_output['Do_nothing'] = fuzz.trimf(percent_output.universe, [-50, 0, 50])
+percent_output['Heat'] = fuzz.trimf(percent_output.universe, [0, 50, 100])
 
 
 percent_output.view()
 
 
-rule1 = ctrl.Rule(degree_dirt['High'] | type_dirt['Fat'], wash_time['very_long'])
+rule1 = ctrl.Rule(error['Too_hot'] | error_dot['Getting_colder'], percent_output['Cool'])
+rule2 = ctrl.Rule(error['Just_right'] | error_dot['Getting_colder'], percent_output['Cool'])
+rule3 = ctrl.Rule(error['Too_cold'] | error_dot['Getting_colder'], percent_output['Cool'])
+rule4 = ctrl.Rule(error['Too_hot'] | error_dot['No_change'], percent_output['Cool'])
+rule5 = ctrl.Rule(error['Jus_right'] | error_dot['No_change'], percent_output['Cool'])
+rule6 = ctrl.Rule(error['Too_cold'] | error_dot['No_change'], percent_output['Cool'])
+rule7 = ctrl.Rule(error['Too_hot'] | error_dot['Getting_hotter'], percent_output['Cool'])
+rule8 = ctrl.Rule(error['Just_right'] | error_dot['Getting_hotter'], percent_output['Cool'])
+rule9 = ctrl.Rule(error['Too_cold'] | error_dot['Getting_hotter'], percent_output['Cool'])
 
 
 
-washing_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9])
-washing = ctrl.ControlSystemSimulation(washing_ctrl)
+percent_output_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9])
+percent = ctrl.ControlSystemSimulation(washing_ctrl)
 
-washing.input['degree_dirt'] = 40
-washing.input['type_dirt'] = 70
+percent.input['error'] = 40
+percent.input['error_dot'] = 70
 
-washing.compute()
+percent.compute()
 
-print(washing.output['wash_time'])
-percent_output.view(sim=washing)
+print(percent.output['percent_output'])
+percent_output.view(sim=percent)
